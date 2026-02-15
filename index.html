@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Змейка.IO | Классическая игра</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-wrapper">
+        <div class="header">
+            <h1>🐍 ЗМЕЙКА.IO</h1>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">СЧЕТ:</span>
+                    <span id="score" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">РЕКОРД:</span>
+                    <span id="highScore" class="stat-value">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+        </div>
+
+        <div class="controls">
+            <div class="direction-pad">
+                <button class="dir-btn" id="btnUp">▲</button>
+                <div class="mid-row">
+                    <button class="dir-btn" id="btnLeft">◀</button>
+                    <button class="dir-btn" id="btnDown">▼</button>
+                    <button class="dir-btn" id="btnRight">▶</button>
+                </div>
+            </div>
+            <button class="reset-btn" id="resetBtn">🔄 Новая игра</button>
+        </div>
+
+        <div class="instructions">
+            <p>👆 Свайпай или используй кнопки</p>
+            <p>🎯 Съешь красную еду чтобы вырасти</p>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
