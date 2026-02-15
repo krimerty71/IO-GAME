@@ -1,0 +1,164 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.game-wrapper {
+    max-width: 500px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #4ecdc4;
+    font-size: 28px;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 15px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-label {
+    color: #a8a8a8;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    color: #4ecdc4;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.canvas-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#gameCanvas {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1;
+    background: #0f3460;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.direction-pad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.mid-row {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+}
+
+.dir-btn {
+    width: 70px;
+    height: 70px;
+    border: none;
+    border-radius: 20px;
+    background: rgba(78, 205, 196, 0.2);
+    color: #4ecdc4;
+    font-size: 30px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(78, 205, 196, 0.3);
+}
+
+.dir-btn:active {
+    transform: scale(0.9);
+    background: #4ecdc4;
+    color: #16213e;
+}
+
+.reset-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 15px;
+    background: #4ecdc4;
+    color: #16213e;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 5px 0 #2d8f8a;
+}
+
+.reset-btn:active {
+    transform: translateY(5px);
+    box-shadow: none;
+}
+
+.instructions {
+    margin-top: 20px;
+    text-align: center;
+    color: #a8a8a8;
+    font-size: 14px;
+}
+
+.instructions p {
+    margin: 5px 0;
+}
+
+/* Для десктопа */
+@media (min-width: 768px) {
+    .dir-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+    
+    .dir-btn:hover {
+        background: rgba(78, 205, 196, 0.3);
+    }
+}
