@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Simple IO Game - Single Player</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            padding: 10px;
+        }
+        .game-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 100%;
+        }
+        canvas {
+            background: #f0f0f0;
+            border-radius: 5px;
+            display: block;
+            width: 100%;
+            height: auto;
+            cursor: crosshair;
+            touch-action: none;
+        }
+        .info {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: white;
+            display: flex;
+            justify-content: space-around;
+            font-size: 14px;
+        }
+        .controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .btn.reset {
+            background: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div class="info">
+            <span>Счет: <span id="score">0</span></span>
+            <span>Размер: <span id="size">20</span></span>
+        </div>
+        <div class="controls">
+            <button class="btn" onclick="resetGame()">Новая игра</button>
+        </div>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Игрок
+        let player = {
+            x: 400,
+            y: 300,
+            size: 20,
+            color: '#4CAF50'
+        };
+        
+        // Еда
+        let foods = [];
+        let score = 0;
+        
+        // Управление
+        let targetX = player.x;
+        let targetY = player.y;
+        
+        // Создание еды
+        function createFood(count) {
+            for (let i = 0; i < count; i++) {
+                foods.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`
+                });
+            }
+        }
+        
+        createFood(30);
+        
+        // Обработка касаний (для телефона)
+        canvas.addEventListener('touchstart', handleTouch);
+        canvas.addEventListener('touchmove', handleTouch);
+        canvas.addEventListener('touchend', () => {});
+        
+        // Обработка мыши (для компьютера)
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            targetX = (e.clientX - rect.left) * scaleX;
+            targetY = (e.clientY - rect.top) * scaleY;
+        });
+        
+        function handleTouch(e) {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            
+            targetX = (touch.clientX - rect.left) * scaleX;
+            targetY = (touch.clientY - rect.top) * scaleY;
+        }
+        
+        // Сброс игры
+        function resetGame() {
+            player = {
+                x: 400,
+                y: 300,
+                size: 20,
+                color: '#' + Math.floor(Math.random()*16777215).toString(16)
+            };
+            foods = [];
+            score = 0;
+            createFood(30);
+            targetX = player.x;
+            targetY = player.y;
+        }
+        
+        // Обновление игры
+        function update() {
+            // Движение к цели
+            const dx = targetX - player.x;
+            const dy = targetY - player.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 1) {
+                player.x += (dx / distance) * 3;
+                player.y += (dy / distance) * 3;
+            }
+            
+            // Границы
+            player.x = Math.max(player.size/2, Math.min(canvas.width - player.size/2, player.x));
+            player.y = Math.max(player.size/2, Math.min(canvas.height - player.size/2, player.y));
+            
+            // Сбор еды
+            foods = foods.filter(food => {
+                const distToFood = Math.sqrt(
+                    Math.pow(player.x - food.x, 2) + 
+                    Math.pow(player.y - food.y, 2)
+                );
+                
+                if (distToFood < player.size/2 + 5) {
+                    player.size += 2;
+                    score += 10;
+                    return false;
+                }
+                return true;
+            });
+            
+            // Добавление новой еды
+            if (foods.length < 30) {
+                createFood(5);
+            }
+            
+            // Обновление UI
+            document.getElementById('score').textContent = score;
+            document.getElementById('size').textContent = Math.round(player.size);
+        }
+        
+        // Отрисовка
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Сетка
+            ctx.strokeStyle = '#ddd';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
+            }
+            for (let i = 0; i < canvas.height; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(canvas.width, i);
+                ctx.stroke();
+            }
+            
+            // Еда
+            foods.forEach(food => {
+                ctx.beginPath();
+                ctx.arc(food.x, food.y, 5, 0, Math.PI * 2);
+                ctx.fillStyle = food.color;
+                ctx.fill();
+                ctx.strokeStyle = '#333';
+                ctx.stroke();
+            });
+            
+            // Игрок
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.size/2, 0, Math.PI * 2);
+            ctx.fillStyle = player.color;
+            ctx.fill();
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // Глазки (для веселья)
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(player.x - player.size/6, player.y - player.size/6, player.size/10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(player.x + player.size/6, player.y - player.size/6, player.size/10, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Прицел
+            ctx.beginPath();
+            ctx.arc(targetX, targetY, 15, 0, Math.PI * 2);
+            ctx.strokeStyle = '#ff0';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            requestAnimationFrame(() => {
+                update();
+                draw();
+            });
+        }
+        
+        draw();
+    </script>
+</body>
+</html>
